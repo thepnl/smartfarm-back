@@ -18,27 +18,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function() {
     //개인정보, 로그인, 로그아웃 Auth Dir > Login, Register, get/{id}
     Route::apiResource('me', 'App\Http\Controllers\Auth\AuthController'); 
-    Route::apiResource('forms', 'App\Http\Controllers\FormController'); 
-    Route::get('form-check', [FormController::class, 'formCheck']);
+
 });
 
-Route::apiResource('participants', 'App\Http\Controllers\ParticipantController'); 
-Route::apiResource('notices', 'App\Http\Controllers\NoticeController'); 
-Route::apiResource('buses', 'App\Http\Controllers\BusController'); 
-Route::apiResource('calendars', 'App\Http\Controllers\CalendarController'); 
-Route::apiResource('asks', 'App\Http\Controllers\AskController'); 
-Route::apiResource('categories', 'App\Http\Controllers\CategoryController'); 
-Route::apiResource('trains', 'App\Http\Controllers\TrainController'); 
-Route::get('homes', [HomeController::class, 'index']);
-Route::get('calendars', [HomeController::class, 'calendar']);
-Route::get('menus', [HomeController::class, 'menu']);
-Route::get('gongzimes', [NoticeController::class, 'indexGongzimes']);
-Route::get('gongzimes/{id}', [NoticeController::class, 'show']);
-Route::get('shorts', [NoticeController::class, 'shorts']);
-Route::get('videos', [NoticeController::class, 'videos']);
-Route::get('popups', [NoticeController::class, 'popups']);
 
-Route::apiResource('donations', 'App\Http\Controllers\DonationController'); 
+Route::apiResource('homes', 'App\Http\Controllers\HomeController'); 
+
 
 
 //ROUTE 관리자
