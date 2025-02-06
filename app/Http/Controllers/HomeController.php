@@ -41,42 +41,6 @@ class HomeController
 
     }
 
-    public function search(Request $request)
-    {
-        $priceData = QueryBuilder::for(PriceLatest::class)
-        ->selectRaw('*')
-        ->limit(10)
-        ->get();
-
-        $tableData = QueryBuilder::for(PriceLatest::class)
-        ->selectRaw('*')
-        ->limit(10)
-        ->get();
-
-        $recentTrend = QueryBuilder::for(RecentTrend::class)
-        ->selectRaw('*')
-        ->limit(10)
-        ->get();
-
-        $equipment = QueryBuilder::for(Equipment::class)
-        ->selectRaw('*')
-        ->limit(10)
-        ->get();
-
-        $corporate = QueryBuilder::for(Corporate::class)
-        ->selectRaw('*')
-        ->limit(10)
-        ->get();
-
-        return response()->json([
-            'success' => true,
-            'message' => '조회',
-            'price_data' => $priceData,
-            'recent_trend' => $recentTrend,
-            'equipment' => $equipment,
-            'corporate' => $corporate,
-        ], 200);
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -94,11 +58,13 @@ class HomeController
 
         $priceData = QueryBuilder::for(PriceLatest::class)
         ->selectRaw('*')
+        ->where('productno', $id)
         ->limit(10)
         ->get();
 
         $tableData = QueryBuilder::for(PriceLatest::class)
         ->selectRaw('*')
+        ->where('productno', $id)
         ->limit(10)
         ->get();
 
