@@ -9,6 +9,8 @@ use App\Models\PriceLatest;
 use App\Models\RecentTrend;
 use App\Models\Equipment;
 use App\Models\Corporate;
+use App\Models\FarmList;
+use Illuminate\Support\Str;
 use App\Http\Resources\NoticeCollection;
 use App\Http\Resources\CalendarCollection;
 use App\Http\Resources\CalendarResource;
@@ -55,6 +57,13 @@ class HomeController
      */
     public function show(Request $request, string $id)
     {
+        $search = QueryBuilder::for(PriceLatest::class)
+        ->selectRaw('*')
+        ->where('productno', $id)
+        ->first();
+
+        //잘라내기
+        $trim = Str::before($search->productName, '/');
 
         $priceData = QueryBuilder::for(PriceLatest::class)
         ->selectRaw('*')
@@ -84,6 +93,12 @@ class HomeController
         ->limit(10)
         ->get();
 
+        $farmList = QueryBuilder::for(FarmList::class)
+        ->selectRaw('*')
+        ->where('crop', 'LIKE', '%' . $trim . '%')
+        ->limit(10)
+        ->get();
+
         return response()->json([
             'success' => true,
             'message' => '조회',
@@ -92,6 +107,7 @@ class HomeController
             'recent_trend' => $recentTrend,
             'quipment_data' => $equipment,
             'corporate_data' => $corporate,
+            'farm_list_data' => $farmList,
         ], 200);
     }
 
@@ -101,7 +117,7 @@ class HomeController
         $title = DB::table('price_latests')->where('productName', 'like', '%' . $request->title  . '%')->first();
     
         if($title) {
-            $priceData = QueryBuilder::for(PriceLatest::class)
+        $priceData = QueryBuilder::for(PriceLatest::class)
         ->selectRaw('*')
         ->where('productno', $title->productno)
         ->limit(10)
@@ -128,6 +144,11 @@ class HomeController
         ->selectRaw('*')
         ->limit(10)
         ->get();
+
+        $farmList = QueryBuilder::for(FarmList::class)
+        ->selectRaw('*')
+        ->where('crop', 'like', '%' . $request->title  . '%')
+        ->get();
         
         return response()->json([
             'success' => true,
@@ -137,6 +158,7 @@ class HomeController
             'recent_trend' => $recentTrend,
             'quipment_data' => $equipment,
             'corporate_data' => $corporate,
+            'farm_list_data' => $farmList,
         ], 200);
     } else {
         return response()->json([
