@@ -96,7 +96,7 @@ class HomeController
         $farmList = QueryBuilder::for(FarmList::class)
         ->selectRaw('*')
         ->where('crop', 'LIKE', '%' . $trim . '%')
-        ->limit(10)
+        ->limit(30)
         ->get();
 
         return response()->json([
@@ -148,6 +148,7 @@ class HomeController
         $farmList = QueryBuilder::for(FarmList::class)
         ->selectRaw('*')
         ->where('crop', 'like', '%' . $request->title  . '%')
+        ->limit(30)
         ->get();
         
         return response()->json([
