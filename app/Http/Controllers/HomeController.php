@@ -173,7 +173,7 @@ class HomeController
      */
     public function update(Request $request, string $id)
     {
-        return 'update';
+       // return 'update';
     }
 
     /**
