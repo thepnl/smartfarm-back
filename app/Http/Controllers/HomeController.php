@@ -95,6 +95,56 @@ class HomeController
         ], 200);
     }
 
+    public function searches(Request $request) {
+
+
+        $title = DB::table('price_latests')->where('productName', 'like', '%' . $request->title  . '%')->first();
+    
+        if($title) {
+            $priceData = QueryBuilder::for(PriceLatest::class)
+        ->selectRaw('*')
+        ->where('productno', $title->productno)
+        ->limit(10)
+        ->get();
+
+        $tableData = QueryBuilder::for(PriceLatest::class)
+        ->selectRaw('*')
+        ->where('productno', $title->productno)
+        ->limit(10)
+        ->get();
+
+        $recentTrend = QueryBuilder::for(RecentTrend::class)
+        ->selectRaw('*')
+        ->where('p_productno', $title->productno)
+        ->limit(10)
+        ->get();
+
+        $equipment = QueryBuilder::for(Equipment::class)
+        ->selectRaw('*')
+        ->limit(10)
+        ->get();
+
+        $corporate = QueryBuilder::for(Corporate::class)
+        ->selectRaw('*')
+        ->limit(10)
+        ->get();
+        
+        return response()->json([
+            'success' => true,
+            'message' => '조회',
+            'price_data' => $priceData,
+            'table_data' => $tableData,
+            'recent_trend' => $recentTrend,
+            'quipment_data' => $equipment,
+            'corporate_data' => $corporate,
+        ], 200);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => '데이터 없음',
+        ], 200);
+    }
+}
     /**
      * Update the specified resource in storage.
      */

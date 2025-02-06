@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->group(function() {
 
 
 Route::apiResource('homes', 'App\Http\Controllers\HomeController'); 
+Route::get('/searches', ['App\Http\Controllers\HomeController', 'searches']);
+
 
 
 
