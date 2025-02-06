@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Form3 extends Model
+class PriceLatest extends Model
 {
     //
 }

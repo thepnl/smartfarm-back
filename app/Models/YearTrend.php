@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Form6 extends Model
+class YearTrend extends Model
 {
     //
 }

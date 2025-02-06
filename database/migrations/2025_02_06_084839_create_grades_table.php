@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('form5s', function (Blueprint $table) {
+        Schema::create('grades', function (Blueprint $table) {
             $table->id();
-            $table->boolean('public')->default(true);
-            $table->foreignId('user_id')->nullable();
-            $table->integer('board_id')->default(0);
-            $table->integer('cardinal_id')->default(0);
-            $table->json('health_info')->nullable();
+            $table->string('p_productrankcode', 2)->comment('등급코드');
+            $table->string('p_graderank', 1)->comment('등급코드');
+            $table->string('gradecode_name', 10)->comment('등급코드명');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('form5s');
+        Schema::dropIfExists('grades');
     }
 };

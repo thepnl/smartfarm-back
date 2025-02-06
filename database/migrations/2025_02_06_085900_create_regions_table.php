@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('form8s', function (Blueprint $table) {
+        Schema::create('regions', function (Blueprint $table) {
             $table->id();
-            $table->boolean('public')->default(true);
-            $table->foreignId('user_id')->nullable();
-            $table->integer('board_id')->default(0);
-            $table->integer('cardinal_id')->default(0);
-            $table->json('vision_info')->nullable();
+            $table->string('region', 10)->comment('지역');
+            $table->string('facility', 5)->comment('시설원예');
+            $table->string('open', 5)->comment('노지작물');
+            $table->string('total', 5)->comment('합계');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('form8s');
+        Schema::dropIfExists('regions');
     }
 };

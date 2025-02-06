@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FormCheck extends Model
+class Code extends Model
 {
     //
 }
