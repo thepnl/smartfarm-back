@@ -70,6 +70,7 @@ class HomeController
 
         $recentTrend = QueryBuilder::for(RecentTrend::class)
         ->selectRaw('*')
+        ->where('p_productno', $id)
         ->limit(10)
         ->get();
 
