@@ -10,6 +10,8 @@ use App\Models\RecentTrend;
 use App\Models\Equipment;
 use App\Models\Corporate;
 use App\Models\FarmList;
+use App\Models\RetailPrice;
+use App\Models\WholesalePrice;
 use Illuminate\Support\Str;
 use App\Http\Resources\NoticeCollection;
 use App\Http\Resources\CalendarCollection;
@@ -62,8 +64,10 @@ class HomeController
         ->where('productno', $id)
         ->first();
 
-        //잘라내기
-        $trim = Str::before($search->productName, '/');
+
+        if($search) {
+            $trim = Str::before($search->productName, '/')  ;
+        }
 
         $priceData = QueryBuilder::for(PriceLatest::class)
         ->selectRaw('*')
@@ -99,6 +103,19 @@ class HomeController
         ->limit(30)
         ->get();
 
+        $wholesalePrice = QueryBuilder::for(WholesalePrice::class)
+        ->selectRaw('*')
+        ->where('itemcode', $id)
+        ->limit(30)
+        ->get();
+
+        $retailPrice = QueryBuilder::for(RetailPrice::class)
+        ->selectRaw('*')
+        ->where('itemcode', $id)
+        ->limit(30)
+        ->get();
+
+
         return response()->json([
             'success' => true,
             'message' => '조회',
@@ -108,6 +125,8 @@ class HomeController
             'quipment_data' => $equipment,
             'corporate_data' => $corporate,
             'farm_list_data' => $farmList,
+            'wholesale_price' => $wholesalePrice,
+            'retail_price' => $retailPrice
         ], 200);
     }
 
