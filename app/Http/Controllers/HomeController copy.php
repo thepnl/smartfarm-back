@@ -65,6 +65,10 @@ class HomeController
         ->first();
 
 
+        if($search) {
+            $trim = Str::before($search->productName, '/')  ;
+        }
+
         $priceData = QueryBuilder::for(PriceLatest::class)
         ->selectRaw('*')
         ->where('productno', $id)
@@ -93,7 +97,11 @@ class HomeController
         ->limit(10)
         ->get();
 
-        $farmList = [];
+        $farmList = QueryBuilder::for(FarmList::class)
+        ->selectRaw('*')
+        ->where('crop', 'LIKE', '%' . $trim . '%')
+        ->limit(30)
+        ->get();
 
         $wholesalePrice = QueryBuilder::for(WholesalePrice::class)
         ->selectRaw('*')
@@ -111,14 +119,14 @@ class HomeController
         return response()->json([
             'success' => true,
             'message' => '조회',
-            'price_data' => $priceData ?? [],
-            'table_data' => $tableData ?? [],
-            'recent_trend' => $recentTrend ?? [],
-            'quipment_data' => $equipment ?? [],
-            'corporate_data' => $corporate ?? [],
-            'farm_list_data' => $farmList ?? [],
-            'wholesale_price' => $wholesalePrice ?? [],
-            'retail_price' => $retailPrice ?? []
+            'price_data' => $priceData,
+            'table_data' => $tableData,
+            'recent_trend' => $recentTrend,
+            'quipment_data' => $equipment,
+            'corporate_data' => $corporate,
+            'farm_list_data' => $farmList,
+            'wholesale_price' => $wholesalePrice,
+            'retail_price' => $retailPrice
         ], 200);
     }
 
@@ -156,32 +164,21 @@ class HomeController
         ->limit(10)
         ->get();
 
-        $farmList = [];
-
-        $wholesalePrice = QueryBuilder::for(WholesalePrice::class)
+        $farmList = QueryBuilder::for(FarmList::class)
         ->selectRaw('*')
-        ->where('itemcode', $id)
+        ->where('crop', 'like', '%' . $request->title  . '%')
         ->limit(30)
         ->get();
-
-        $retailPrice = QueryBuilder::for(RetailPrice::class)
-        ->selectRaw('*')
-        ->where('itemcode', $id)
-        ->limit(30)
-        ->get();
-
         
         return response()->json([
             'success' => true,
             'message' => '조회',
-            'price_data' => $priceData ?? [],
-            'table_data' => $tableData ?? [],
-            'recent_trend' => $recentTrend ?? [],
-            'quipment_data' => $equipment ?? [],
-            'corporate_data' => $corporate ?? [],
-            'farm_list_data' => $farmList ?? [],
-            'wholesale_price' => $wholesalePrice ?? [],
-            'retail_price' => $retailPrice ?? []
+            'price_data' => $priceData,
+            'table_data' => $tableData,
+            'recent_trend' => $recentTrend,
+            'quipment_data' => $equipment,
+            'corporate_data' => $corporate,
+            'farm_list_data' => $farmList,
         ], 200);
     } else {
         return response()->json([
