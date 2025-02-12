@@ -64,6 +64,10 @@ class HomeController
         ->where('productno', $id)
         ->first();
 
+        //잘라내기
+        if($search) {
+            $trim = Str::before($search->productName, '/')  ;
+        }
 
         $priceData = QueryBuilder::for(PriceLatest::class)
         ->selectRaw('*')
@@ -93,17 +97,23 @@ class HomeController
         ->limit(10)
         ->get();
 
-        $farmList = [];
-
-        $wholesalePrice = QueryBuilder::for(WholesalePrice::class)
+        $farmList = QueryBuilder::for(FarmList::class)
         ->selectRaw('*')
-        ->where('itemcode', $id)
+        ->where('crop', 'LIKE', '%' . $trim . '%')
         ->limit(30)
         ->get();
 
-        $retailPrice = QueryBuilder::for(RetailPrice::class)
+        $wholesalePrice = DB::table('wholesale_prices')
         ->selectRaw('*')
         ->where('itemcode', $id)
+        ->leftJoin('grades', 'wholesale_prices.productrankcode', '=', 'grades.p_productrankcode')
+        ->limit(30)
+        ->get();
+
+        $retailPrice = DB::table('retail_prices')
+        ->selectRaw('*')
+        ->where('itemcode', $id)
+        ->leftJoin('grades', 'retail_prices.productrankcode', '=', 'grades.p_productrankcode')
         ->limit(30)
         ->get();
 
@@ -111,14 +121,14 @@ class HomeController
         return response()->json([
             'success' => true,
             'message' => '조회',
-            'price_data' => $priceData ?? [],
-            'table_data' => $tableData ?? [],
-            'recent_trend' => $recentTrend ?? [],
-            'quipment_data' => $equipment ?? [],
-            'corporate_data' => $corporate ?? [],
-            'farm_list_data' => $farmList ?? [],
-            'wholesale_price' => $wholesalePrice ?? [],
-            'retail_price' => $retailPrice ?? []
+            'price_data' => $priceData,
+            'table_data' => $tableData,
+            'recent_trend' => $recentTrend,
+            'quipment_data' => $equipment,
+            'corporate_data' => $corporate,
+            'farm_list_data' => $farmList,
+            'wholesale_price' => $wholesalePrice,
+            'retail_price' => $retailPrice
         ], 200);
     }
 
@@ -127,61 +137,73 @@ class HomeController
 
         $title = DB::table('price_latests')->where('productName', 'like', '%' . $request->title  . '%')->first();
     
+                //잘라내기
+                if($request->title) {
+                    $trim = Str::before($request->title, '/')  ;
+                }
+
         if($title) {
-        $priceData = QueryBuilder::for(PriceLatest::class)
-        ->selectRaw('*')
-        ->where('productno', $title->productno)
-        ->limit(10)
-        ->get();
-
-        $tableData = QueryBuilder::for(PriceLatest::class)
-        ->selectRaw('*')
-        ->where('productno', $title->productno)
-        ->limit(10)
-        ->get();
-
-        $recentTrend = QueryBuilder::for(RecentTrend::class)
-        ->selectRaw('*')
-        ->where('p_productno', $title->productno)
-        ->limit(10)
-        ->get();
-
-        $equipment = QueryBuilder::for(Equipment::class)
-        ->selectRaw('*')
-        ->limit(10)
-        ->get();
-
-        $corporate = QueryBuilder::for(Corporate::class)
-        ->selectRaw('*')
-        ->limit(10)
-        ->get();
-
-        $farmList = [];
-
-        $wholesalePrice = QueryBuilder::for(WholesalePrice::class)
-        ->selectRaw('*')
-        ->where('itemcode', $id)
-        ->limit(30)
-        ->get();
-
-        $retailPrice = QueryBuilder::for(RetailPrice::class)
-        ->selectRaw('*')
-        ->where('itemcode', $id)
-        ->limit(30)
-        ->get();
+            $priceData = QueryBuilder::for(PriceLatest::class)
+            ->selectRaw('*')
+            ->where('productno', $title->productno)
+            ->limit(10)
+            ->get();
+    
+            $tableData = QueryBuilder::for(PriceLatest::class)
+            ->selectRaw('*')
+            ->where('productno', $title->productno)
+            ->limit(10)
+            ->get();
+    
+            $recentTrend = QueryBuilder::for(RecentTrend::class)
+            ->selectRaw('*')
+            ->where('p_productno', $title->productno)
+            ->limit(10)
+            ->get();
+    
+            $equipment = QueryBuilder::for(Equipment::class)
+            ->selectRaw('*')
+            ->limit(10)
+            ->get();
+    
+            $corporate = QueryBuilder::for(Corporate::class)
+            ->selectRaw('*')
+            ->limit(10)
+            ->get();
+    
+            $farmList = QueryBuilder::for(FarmList::class)
+            ->selectRaw('*')
+            ->where('crop', 'LIKE', '%' . $trim . '%')
+            ->limit(30)
+            ->get();
+    
+            $wholesalePrice = DB::table('wholesale_prices')
+            ->selectRaw('*')
+            ->where('itemcode', $title->productno)
+            ->leftJoin('grades', 'wholesale_prices.productrankcode', '=', 'grades.p_productrankcode')
+            ->limit(30)
+            ->get();
+    
+            $retailPrice = DB::table('retail_prices')
+            ->selectRaw('*')
+            ->where('itemcode', $title->productno)
+            ->whereIn('p_productrankcode', ['04','05'])
+            ->leftJoin('grades', 'retail_prices.productrankcode', '=', 'grades.p_productrankcode')
+            ->limit(30)
+            ->get();
 
         
         return response()->json([
             'success' => true,
             'message' => '조회',
-            'price_data' => $priceData ?? [],
-            'table_data' => $tableData ?? [],
-            'recent_trend' => $recentTrend ?? [],
-            'quipment_data' => $equipment ?? [],
-            'corporate_data' => $corporate ?? [],
-            'farm_list_data' => $farmList ?? [],
-            'wholesale_price' => $wholesalePrice ?? [],
-            'retail_price' => $retailPrice ?? []
+            'price_data' => $priceData,
+            'table_data' => $tableData,
+            'recent_trend' => $recentTrend,
+            'quipment_data' => $equipment,
+            'corporate_data' => $corporate,
+            'farm_list_data' => $farmList,
+            'wholesale_price' => $wholesalePrice,
+            'retail_price' => $retailPrice
         ], 200);
     } else {
         return response()->json([
